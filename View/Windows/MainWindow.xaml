@@ -1,0 +1,40 @@
+﻿<Window x:Class="View.Windows.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:View.Windows"
+        xmlns:converters="clr-namespace:View.Converters"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <converters:TypeToStringConverter x:Key="TypeToStringConverter"/>
+    </Window.Resources>
+    <DockPanel LastChildFill="True">
+        <Grid DockPanel.Dock="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="LogicExpression:" Grid.Column="0" VerticalAlignment="Center"/>
+            <TextBox Grid.Column="1" VerticalAlignment="Center"/>
+            <Button Grid.Column="2" Width="75" Height="25" Content="Edit"
+                    Command="{Binding EditExpressionCommand}"/>
+        </Grid>
+        <GroupBox DockPanel.Dock="Left" Header="Logic values">
+            <DataGrid ItemsSource="{Binding Variables}" AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+                    <DataGridTextColumn Header="Value" Binding="{Binding Value}"/>
+                    <DataGridTextColumn Header="Type" Binding="{Binding Type,
+                        Converter={StaticResource TypeToStringConverter}}"/>
+                    <DataGridTextColumn Header="Bool" Binding="{Binding Bool}"
+                                        IsReadOnly="True"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
+        <Button Content="Add" Command="{Binding AddVariableCommand}"/>
+        <DataGrid></DataGrid>
+    </DockPanel>
+</Window>

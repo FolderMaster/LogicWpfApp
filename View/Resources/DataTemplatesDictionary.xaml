@@ -1,0 +1,12 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:dg="clr-namespace:System.Windows.Controls;assembly=PresentationFramework">
+    <DataGridTextColumn x:Key="VariableTypeColumn" Header="Type" Binding="{Binding Type}"/>
+    <ObjectDataProvider x:Key="VariableColumns" MethodName="Add">
+        <ObjectDataProvider.MethodParameters>
+            <x:Array Type="{x:Type DataGridColumn}">
+                <StaticResource ResourceKey="VariableTypeColumn" />
+            </x:Array>
+        </ObjectDataProvider.MethodParameters>
+    </ObjectDataProvider>
+</ResourceDictionary>
