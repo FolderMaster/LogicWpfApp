@@ -1,10 +1,10 @@
-﻿namespace Model.Operators.PairOperators
+﻿namespace Model.Logic.Operators.PairOperators
 {
-    public class XorOperator : IPairLogicOperator
+    public class EqualOperator : IPairLogicOperator
     {
-        private static readonly string _operationName = "Xor";
+        private static readonly string _operationName = "Equal";
 
-        private static readonly string _operationChar = "^";
+        private static readonly string _operationChar = "=";
 
         private static readonly int _operationPriority = 1;
 
@@ -12,7 +12,7 @@
 
         public ILogicValue RightOperand { get; set; } = null!;
 
-        public bool? Bool => LeftOperand.Bool ^ RightOperand.Bool;
+        public bool? Bool => LeftOperand.Bool == RightOperand.Bool;
 
         public int OperationPriority => _operationPriority;
 

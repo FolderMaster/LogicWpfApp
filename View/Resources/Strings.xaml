@@ -1,0 +1,17 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <sys:String x:Key="ErrorTitle">Error!</sys:String>
+    <sys:String x:Key="InformationTitle">Information.</sys:String>
+    <sys:String x:Key="QuestionTitle">Question?</sys:String>
+    <sys:String x:Key="WarningTitle">Warning!</sys:String>
+    
+    <sys:String x:Key="MainTitle">Logic app</sys:String>
+
+    <sys:String x:Key="OKHeader">OK</sys:String>
+    <sys:String x:Key="CancelHeader">Cancel</sys:String>
+    <sys:String x:Key="YesHeader">Yes</sys:String>
+    <sys:String x:Key="NoHeader">No</sys:String>
+    
+    <sys:String x:Key="AddHeader">Add</sys:String>
+</ResourceDictionary>

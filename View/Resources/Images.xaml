@@ -1,0 +1,33 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <DrawingImage x:Key="ErrorIcon">
+        <DrawingImage.Drawing>
+            <Binding Source="pack://application:,,,/View;component/Resources/Images/ErrorIcon.svg"
+                     Converter="{StaticResource SvgToDrawingGroupConverter}"/>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    <DrawingImage x:Key="WarningIcon">
+        <DrawingImage.Drawing>
+            <Binding Source="pack://application:,,,/View;component/Resources/Images/WarningIcon.svg"
+                 Converter="{StaticResource SvgToDrawingGroupConverter}"/>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    <DrawingImage x:Key="QuestionIcon">
+        <DrawingImage.Drawing>
+            <Binding Source="pack://application:,,,/View;component/Resources/Images/QuestionIcon.svg"
+                 Converter="{StaticResource SvgToDrawingGroupConverter}"/>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    <DrawingImage x:Key="InformationIcon">
+        <DrawingImage.Drawing>
+            <Binding Source="pack://application:,,,/View;component/Resources/Images/InformationIcon.svg"
+                 Converter="{StaticResource SvgToDrawingGroupConverter}"/>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    <DrawingImage x:Key="MainIcon">
+        <DrawingImage.Drawing>
+            <Binding Source="pack://application:,,,/View;component/Resources/Images/LogicIcon.svg"
+             Converter="{StaticResource SvgToDrawingGroupConverter}"/>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+</ResourceDictionary>

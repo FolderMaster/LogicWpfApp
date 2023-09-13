@@ -1,4 +1,4 @@
-﻿namespace Model.Operators
+﻿namespace Model.Logic.Operators
 {
     public interface ILogicOperator : ILogicValue
     {

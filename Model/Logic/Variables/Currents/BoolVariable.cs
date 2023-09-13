@@ -1,4 +1,4 @@
-﻿namespace Model.Variables
+﻿namespace Model.Variables.Currents
 {
     public class BoolVariable : ILogicVariable
     {

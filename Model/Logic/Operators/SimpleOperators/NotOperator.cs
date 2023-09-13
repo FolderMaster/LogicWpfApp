@@ -1,4 +1,4 @@
-﻿namespace Model.Operators.SimpleOperators
+﻿namespace Model.Logic.Operators.SimpleOperators
 {
     public class NotOperator : ISimpleLogicOperator
     {

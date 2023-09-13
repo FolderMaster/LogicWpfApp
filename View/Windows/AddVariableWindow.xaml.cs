@@ -10,23 +10,18 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using View.Implementations.DialogServices.MessageBoxes;
-using View.Implementations.DialogServices.Windows;
-
-using ViewModel.VMs;
 
 namespace View.Windows
 {
-    public partial class MainWindow : Window
+    /// <summary>
+    /// Interaction logic for AddVariableWindow.xaml
+    /// </summary>
+    public partial class AddVariableWindow : Window
     {
-        public MainWindow(AddVariableWindowDialogService addVariableDialog,
-            InformationMessageBoxDialogService errorDialog)
+        public AddVariableWindow()
         {
             InitializeComponent();
-
-            DataContext = new MainVM(addVariableDialog, errorDialog);
         }
     }
 }

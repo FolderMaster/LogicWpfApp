@@ -1,4 +1,4 @@
-﻿namespace Model.Operators.PairOperators
+﻿namespace Model.Logic.Operators.PairOperators
 {
     public class ImplicateOperator : IPairLogicOperator
     {
