@@ -1,25 +1,12 @@
 ﻿namespace Model.Logic.Operators.PairOperators
 {
-    public class XorOperator : IPairLogicOperator
+    public class XorOperator : BasePairOperator<bool>
     {
-        private static readonly string _operationName = "Xor";
+        public override int Priority => 1;
 
-        private static readonly string _operationChar = "^";
+        protected override bool CalculateValue() =>
+            LeftOperand.GetValue() ^ RightOperand.GetValue();
 
-        private static readonly int _operationPriority = 1;
-
-        public ILogicValue LeftOperand { get; set; } = null!;
-
-        public ILogicValue RightOperand { get; set; } = null!;
-
-        public bool? Bool => LeftOperand.Bool ^ RightOperand.Bool;
-
-        public int OperationPriority => _operationPriority;
-
-        public string OperationName => _operationName;
-
-        public string OperationChar => _operationChar;
-
-        public override string ToString() => $"{LeftOperand} {OperationChar} {RightOperand}";
+        public override string ToString() => "^";
     }
 }

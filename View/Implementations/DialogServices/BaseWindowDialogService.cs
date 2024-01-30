@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Windows;
-
 using ViewModel.Interfaces;
 
 namespace View.Implementations.DialogServices
 {
     public abstract class BaseWindowDialogService : IDialogService
     {
-        private Window? _window;
+        private DialogWindow? _window;
 
         public bool IsShow => _window != null;
 
@@ -19,20 +17,14 @@ namespace View.Implementations.DialogServices
             }
             else
             {
-                _window = CreateConfiguredWindow(parameter);
-                return _window.ShowDialog();
+                _window = CreateWindow(parameter);
+                _window.ShowDialog();
+                var dialogResult = _window.ExtendedDialogResult;
+                _window = null;
+                return dialogResult;
             }
         }
 
-        protected abstract Window CreateWindow(object? parameter);
-
-        private Window CreateConfiguredWindow(object? parameter)
-        {
-            var window = CreateWindow(parameter);
-            window.Closed += Window_Closed;
-            return window;
-        }
-
-        private void Window_Closed(object? sender, EventArgs e) => _window = null;
+        protected abstract DialogWindow CreateWindow(object? parameter);
     }
 }

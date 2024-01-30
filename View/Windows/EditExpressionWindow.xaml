@@ -1,0 +1,37 @@
+﻿<ds:DialogWindow x:Class="View.Windows.EditExpressionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:View.Windows"
+        xmlns:c="clr-namespace:View.Controls"
+        xmlns:ds="clr-namespace:View.Implementations.DialogServices"
+        mc:Ignorable="d"
+        Icon="{DynamicResource MainIcon}" Title="Edit expression" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBox Text="{Binding Expression}"/>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" MinWidth="60"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <GroupBox Header="Logic values">
+                <DataGrid ItemsSource="{Binding Variables}" ClipboardCopyMode="IncludeHeader" AllowDrop="True">
+                </DataGrid>
+            </GroupBox>
+            <GridSplitter Grid.Column="1" Width="10" ResizeDirection="Columns"
+              ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch"/>
+            <c:ExpressionControl Grid.Column="2" Expression="{Binding Expression}"/>
+        </Grid>
+        <WrapPanel Grid.Row="2" Orientation="Horizontal" FlowDirection="RightToLeft">
+            <Button IsDefault="True" Content="{StaticResource OKHeader}"/>
+            <Button Content="{StaticResource CancelHeader}"/>
+        </WrapPanel>
+    </Grid>
+</ds:DialogWindow>

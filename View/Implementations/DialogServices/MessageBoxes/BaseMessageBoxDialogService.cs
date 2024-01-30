@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Windows;
 using System.Windows.Media;
-
 using View.Windows;
 
 using ViewModel.Interfaces;
@@ -21,7 +19,7 @@ namespace View.Implementations.DialogServices.MessageBoxes
         public BaseMessageBoxDialogService(IResourceService resourceService) : base() =>
             _resourceService = resourceService;
 
-        protected override Window CreateWindow(object? parameter) =>
+        protected override DialogWindow CreateWindow(object? parameter) =>
             new MessageBoxWindow(Image, Title, parameter?.ToString() ?? "", ButtonsContents);
     }
 }

@@ -8,30 +8,25 @@
         Title="{DynamicResource MainTitle}" Icon="{DynamicResource MainIcon}" Height="450" Width="800">
     <DockPanel LastChildFill="True">
         <Grid DockPanel.Dock="Top">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <Label Content="LogicExpression:" Grid.Column="0" VerticalAlignment="Center"/>
-            <TextBox Grid.Column="1" VerticalAlignment="Center"/>
-            <Button Grid.Column="2" Content="Edit" Command="{Binding EditExpressionCommand}"/>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="LogicExpression:" Grid.Column="0" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="1" VerticalAlignment="Center" Text="{Binding LogicExpression}"/>
+                <Button Grid.Column="2" Content="Edit" Command="{Binding EditExpressionCommand}"/>
+            </Grid>
+            <WrapPanel Grid.Row="1" FlowDirection="RightToLeft">
+                <Button Grid.Column="2" Content="Calculate" Command="{Binding CalculateCommand}"/>
+                <Button Grid.Column="2" Content="Settings" Command="{Binding SettingsCommand}"/>
+            </WrapPanel>
         </Grid>
-        <GroupBox DockPanel.Dock="Left" Header="Logic values">
-            <DockPanel LastChildFill="True">
-                <Button DockPanel.Dock="Bottom" Content="{DynamicResource AddHeader}"
-                        Command="{Binding AddVariableCommand}" Style="{StaticResource WideButton}"/>
-                <DataGrid ItemsSource="{Binding Variables}" AutoGenerateColumns="False">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
-                        <DataGridTextColumn Header="Value" Binding="{Binding Value}"/>
-                        <DataGridTextColumn Header="Type" Binding="{Binding Type}"/>
-                        <DataGridTextColumn Header="Bool" Binding="{Binding Bool}"
-                                        IsReadOnly="True"/>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </DockPanel>
-        </GroupBox>
         <DataGrid></DataGrid>
     </DockPanel>
 </Window>

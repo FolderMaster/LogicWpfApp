@@ -33,7 +33,7 @@ namespace View
                 services.AddSingleton<QuestionMessageBoxDialogService>();
                 services.AddSingleton<WarningMessageBoxDialogService>();
 
-                services.AddSingleton<AddVariableWindowDialogService>();
+                services.AddSingleton<EditExpressionWindowDialogService>();
 
                 services.AddSingleton<MainWindow>();
             }).Build();
@@ -47,7 +47,8 @@ namespace View
             base.OnStartup(e);
             _host.Start();
 
-            _errorDialogService = _host.Services.GetRequiredService<ErrorMessageBoxDialogService>();
+            _errorDialogService =
+                _host.Services.GetRequiredService<ErrorMessageBoxDialogService>();
             AppDomain.CurrentDomain.FirstChanceException += (sender, e) =>
                 _errorDialogService.ShowDialog(e.Exception.Message);
 
