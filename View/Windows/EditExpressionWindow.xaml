@@ -14,7 +14,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBox Text="{Binding Expression}"/>
+        <TextBox Text="{Binding ExpressionText}"/>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" MinWidth="60"/>
@@ -27,7 +27,7 @@
             </GroupBox>
             <GridSplitter Grid.Column="1" Width="10" ResizeDirection="Columns"
               ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch"/>
-            <c:ExpressionControl Grid.Column="2" Expression="{Binding Expression}"/>
+            <c:ExpressionControl Grid.Column="2" Expression="{Binding Expression, Mode=OneWay}"/>
         </Grid>
         <WrapPanel Grid.Row="2" Orientation="Horizontal" FlowDirection="RightToLeft">
             <Button IsDefault="True" Content="{StaticResource OKHeader}"/>

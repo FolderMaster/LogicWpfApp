@@ -1,35 +1,36 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System.Collections.ObjectModel;
 
 using Model.Logic.Expressions;
 using Model.Logic.Variables;
-using Model.Logic.Operators.PairOperators;
-using Model.Logic.Operators.SingleOperators;
 
 namespace ViewModel.VMs
 {
     public partial class EditExpressionVM : ObservableObject
     {
-        [ObservableProperty]
-        private ObservableCollection<INamedVariable<bool>> variables = new() { new NamedBoolVariable("A"), new NamedBoolVariable("B") };
+        private Session _session;
 
-        [ObservableProperty]
-        private IExpression<bool> expression = new Expression<bool>();
+        private string _expressionText;
 
-        public EditExpressionVM()
+        public string ExpressionText
         {
-            Expression.Add(Variables[0]);
-            Expression.Add(new OrOperator());
-            Expression.Add(Variables[1]);
-            Expression.Add(new AndOperator());
-            Expression.Add(Variables[0]);
-            Expression.Add(new ImplicateOperator());
-            Expression.Add(new NotOperator());
-            Expression.Add(Variables[1]);
-            Expression.Add(new XorOperator());
-            Expression.Add(Variables[0]);
-            Expression.Add(new EqualOperator());
-            Expression.Add(Variables[1]);
+            get => _expressionText;
+            set => SetProperty(ref _expressionText, value);
+        }
+
+        public IExpression<bool> Expression
+        {
+            get => _session.Expression;
+        }
+
+        public IList<INamedVariable<bool>> Variables
+        {
+            get => _session.Variables;
+        }
+
+        public EditExpressionVM(Session session)
+        {
+            _session = session;
+            _expressionText = session.Expression.ToString();
         }
     }
 }

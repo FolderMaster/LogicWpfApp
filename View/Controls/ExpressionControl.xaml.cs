@@ -20,7 +20,7 @@ namespace View.Controls
 
         private static DependencyProperty ExpressionProperty =
             DependencyProperty.Register(nameof(Expression), typeof(IExpression<bool>),
-                typeof(ExpressionControl), new PropertyMetadata(OnExpressionChanged));
+                typeof(ExpressionControl), new FrameworkPropertyMetadata(null, OnExpressionChanged));
 
         public ExpressionControl()
         {
@@ -40,17 +40,19 @@ namespace View.Controls
                 };
                 var border = new Border()
                 {
-                    Margin = new Thickness(value.Index * 30, value.Depth * 30, 0, 0),
                     Padding = new Thickness(5),
                     BorderThickness = new Thickness(1),
                     CornerRadius = new CornerRadius(5),
                     VerticalAlignment = VerticalAlignment.Top,
                     HorizontalAlignment = HorizontalAlignment.Left,
                     Background = _innerBrush,
-                    BorderBrush = _borderBrush
+                    BorderBrush = _borderBrush,
                 };
                 border.Child = text;
+
                 control.mainLayout.Children.Add(border);
+                Canvas.SetLeft(border, value.Index * 30);
+                Canvas.SetTop(border, value.Depth * 30);
             }
         }
     }

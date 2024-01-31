@@ -10,4 +10,9 @@
     <Style x:Key="WideButton" BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
         <Setter Property="Width" Value="Auto"/>
     </Style>
+    <Style BasedOn="{StaticResource {x:Type Control}}" TargetType="ProgressBar">
+        <Setter Property="Minimum" Value="0"/>
+        <Setter Property="Maximum" Value="1"/>
+        <Setter Property="FlowDirection" Value="LeftToRight"/>
+    </Style>
 </ResourceDictionary>

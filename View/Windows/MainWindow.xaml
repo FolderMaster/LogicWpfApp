@@ -6,6 +6,9 @@
         xmlns:local="clr-namespace:View.Windows"
         mc:Ignorable="d"
         Title="{DynamicResource MainTitle}" Icon="{DynamicResource MainIcon}" Height="450" Width="800">
+    <Window.TaskbarItemInfo>
+        <TaskbarItemInfo ProgressState="Normal" ProgressValue="{Binding CalculatingProgressValue}"/>
+    </Window.TaskbarItemInfo>
     <DockPanel LastChildFill="True">
         <Grid DockPanel.Dock="Top">
             <Grid.RowDefinitions>
@@ -19,14 +22,16 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <Label Content="LogicExpression:" Grid.Column="0" VerticalAlignment="Center"/>
-                <TextBox Grid.Column="1" VerticalAlignment="Center" Text="{Binding LogicExpression}"/>
+                <TextBox Grid.Column="1" VerticalAlignment="Center" Text="{Binding ExpressionText}"/>
                 <Button Grid.Column="2" Content="Edit" Command="{Binding EditExpressionCommand}"/>
             </Grid>
             <WrapPanel Grid.Row="1" FlowDirection="RightToLeft">
+                
                 <Button Grid.Column="2" Content="Calculate" Command="{Binding CalculateCommand}"/>
                 <Button Grid.Column="2" Content="Settings" Command="{Binding SettingsCommand}"/>
+                <ProgressBar Width="200" Value="{Binding CalculatingProgressValue}"/>
             </WrapPanel>
         </Grid>
-        <DataGrid></DataGrid>
+        <DataGrid x:Name="dataGrid" ItemsSource="{Binding CalculatingResults}" IsReadOnly="True"/>
     </DockPanel>
 </Window>

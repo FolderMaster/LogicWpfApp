@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
 using System;
+using System.Collections.Generic;
 using System.Windows;
 
 using View.Implementations;
@@ -9,7 +9,13 @@ using View.Implementations.DialogServices.MessageBoxes;
 using View.Implementations.DialogServices.Windows;
 using View.Windows;
 
+using ViewModel;
 using ViewModel.Interfaces;
+
+using Model.Logic.Expressions;
+using Model.Logic.Operators.PairOperators;
+using Model.Logic.Operators.SingleOperators;
+using Model.Logic.Variables;
 
 namespace View
 {
@@ -27,6 +33,35 @@ namespace View
             _host = Host.CreateDefaultBuilder().ConfigureServices((services) =>
             {
                 services.AddSingleton<IResourceService, WindowResourceService>();
+
+                services.AddSingleton((s) => 
+                {
+                    var result = new Session();
+
+                    var variables = new List<INamedVariable<bool>>()
+                    {
+                        new NamedBoolVariable("A"),
+                        new NamedBoolVariable("B")
+                    };
+                    result.Variables = variables;
+
+                    var expression = new Expression<bool>();
+                    expression.Add(result.Variables[0]);
+                    expression.Add(new OrOperator());
+                    expression.Add(result.Variables[1]);
+                    expression.Add(new AndOperator());
+                    expression.Add(result.Variables[0]);
+                    expression.Add(new ImplicateOperator());
+                    expression.Add(new NotOperator());
+                    expression.Add(result.Variables[1]);
+                    expression.Add(new XorOperator());
+                    expression.Add(result.Variables[0]);
+                    expression.Add(new EqualOperator());
+                    expression.Add(result.Variables[1]);
+                    result.Expression = expression;
+
+                    return result;
+                });
 
                 services.AddSingleton<ErrorMessageBoxDialogService>();
                 services.AddSingleton<InformationMessageBoxDialogService>();
