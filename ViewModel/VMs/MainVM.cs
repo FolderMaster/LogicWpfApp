@@ -11,7 +11,11 @@ namespace ViewModel.VMs
 {
     public partial class MainVM : ObservableObject
     {
+        private CalculatingManager<bool> _calculatingManager = new();
+
         private Session _session;
+
+        private IBackgroundWorker _backgroundWorker;
 
         private string _expressionText;
 
@@ -21,59 +25,79 @@ namespace ViewModel.VMs
         [ObservableProperty]
         private double calculatingProgressValue;
 
+        [ObservableProperty]
+        private CalculatingState calculatingProgressState;
+
         public string ExpressionText
         {
             get => _expressionText;
             set => SetProperty(ref _expressionText, value);
         }
 
-        public ICommand EditExpressionCommand { get; private set; }
+        public RelayCommand EditExpressionCommand { get; private set; }
 
-        public ICommand SettingsCommand { get; private set; }
+        public RelayCommand SettingsCommand { get; private set; }
 
-        public ICommand CalculateCommand { get; private set; }
+        public RelayCommand StartCommand { get; private set; }
 
-        public MainVM(IDialogService errorDialog, IDialogService editExpressionDialog, Session session)
+        public RelayCommand StopCommand { get; private set; }
+
+        public RelayCommand PauseCommand { get; private set; }
+
+        public RelayCommand ResumeCommand { get; private set; }
+
+        public MainVM(IDialogService errorDialog, IDialogService editExpressionDialog,
+            IBackgroundWorker backgroundWorker, Session session)
         {
             _session = session;
+            _backgroundWorker = backgroundWorker;
             _expressionText = _session.Expression.ToString();
-
+            _calculatingManager.Expression = session.Expression;
+            _calculatingManager.Variables = session.Variables;
+            _calculatingManager.Options = new BoolCalculatingOptions(session.Variables.Count);
             EditExpressionCommand = new RelayCommand(() =>
             {
                 var dialogResult = editExpressionDialog.ShowDialog();
             });
-            CalculateCommand = new RelayCommand(async () =>
+            StartCommand = new RelayCommand(() =>
             {
                 CalculatingResults.Clear();
-                var manager = new CalculatingManager<bool>();
-                manager.AddedResultRow += CalculatingManager_AddedResultRow;
-                await manager.Calculate(_session.Expression, _session.Variables,
-                    (int)Math.Pow(2, _session.Variables.Count), Generate);
-                manager.AddedResultRow -= CalculatingManager_AddedResultRow;
-                CalculatingProgressValue = 0;
-            });
+                _calculatingManager.AddedResult += CalculatingManager_AddedResult;
+                _calculatingManager.StateChanged += CalculatingManager_StateChanged;
+                _calculatingManager.StartCalculate();
+            }, () => CalculatingProgressState == CalculatingState.None);
+            StopCommand = new RelayCommand(_calculatingManager.StopCalculate,
+                () => CalculatingProgressState == CalculatingState.Run);
+            PauseCommand = new RelayCommand(_calculatingManager.PauseCalculate,
+                () => CalculatingProgressState == CalculatingState.Run);
+            ResumeCommand = new RelayCommand(_calculatingManager.ResumeCalculate,
+                () => CalculatingProgressState == CalculatingState.Pause);
         }
 
-        private IEnumerable<IList<bool>> Generate()
+        private void CalculatingManager_StateChanged(object? sender, CalculatingStateEventArgs e)
         {
-            var count = _session.Variables.Count;
-            for (var i = 0; i < Math.Pow(2, count); ++i)
+            _backgroundWorker.Run(() => {
+                CalculatingProgressState = e.State;
+                StartCommand.NotifyCanExecuteChanged();
+                StopCommand.NotifyCanExecuteChanged();
+                PauseCommand.NotifyCanExecuteChanged();
+                ResumeCommand.NotifyCanExecuteChanged();
+            });
+            if (e.State == CalculatingState.None)
             {
-                var value = i;
-                var result = new List<bool>();
-                for (var n = 0; n < count; ++n)
-                {
-                    result.Add((value & 1) == 1);
-                    value = value >> 1;
-                }
-                yield return result;
+                _calculatingManager.AddedResult -= CalculatingManager_AddedResult;
+                _calculatingManager.StateChanged -= CalculatingManager_StateChanged;
+                _backgroundWorker.Run(() => CalculatingProgressValue = 0);
             }
         }
 
-        private void CalculatingManager_AddedResultRow(object? sender, CalculatingEventArgs<bool> args)
+        private void CalculatingManager_AddedResult(object? sender, CalculatingResultEventArgs<bool> e)
         {
-            CalculatingResults.Add(args.ResultRow);
-            CalculatingProgressValue = args.ProgressValue;
+            _backgroundWorker.Run(() =>
+            {
+                CalculatingResults.Add(e.ResultRow);
+                CalculatingProgressValue = e.ProgressValue;
+            });
         }
     }
 }

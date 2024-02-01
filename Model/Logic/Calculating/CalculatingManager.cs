@@ -5,32 +5,90 @@ namespace Model.Logic.Calculating
 {
     public class CalculatingManager<T>
     {
-        public event EventHandler<CalculatingEventArgs<T>>? AddedResultRow;
+        private AutoResetEvent _pauseEvent = new(true);
 
-        public async Task Calculate(IExpression<T> expression,
-            IList<INamedVariable<T>> variables, int resultRowCount,
-            Func<IEnumerable<IList<T>>> generator)
+        private CalculatingState _state = CalculatingState.None;
+
+        public IExpression<T>? Expression { get; set; }
+
+        public IList<INamedVariable<T>>? Variables { get; set; }
+
+        public ICalculatingOptions<T>? Options { get; set; }
+
+        public CalculatingState State
+        {
+            get => _state;
+            private set
+            {
+                if (_state != value)
+                {
+                    _state = value;
+                    StateChanged?.Invoke(this, new CalculatingStateEventArgs(value));
+                }
+            }
+        }
+
+        public event EventHandler<CalculatingStateEventArgs>? StateChanged;
+
+        public event EventHandler<CalculatingResultEventArgs<T>>? AddedResult;
+
+        public void StartCalculate()
+        {
+            State = CalculatingState.Run;
+            var thread = new Thread(Calculate)
+            {
+                IsBackground = true
+            };
+            thread.Start();
+        }
+
+        private void Calculate()
         {
             var result = new List<CalculatingResult<T>>();
             var count = 0;
-            foreach (var values in generator())
+            foreach (var values in Options.GenerateArgs())
             {
-                if (values.Count != variables.Count)
+                if (State == CalculatingState.None)
+                {
+                    break;
+                }
+                if(State == CalculatingState.Pause)
+                {
+                    _pauseEvent.WaitOne();
+                }
+                if (values.Count != Variables.Count)
                 {
                     throw new ArgumentException();
                 }
                 var dictionary = new Dictionary<INamedVariable<T>, T>();
-                for (int n = 0; n < variables.Count; ++n)
+                for (int n = 0; n < Variables.Count; ++n)
                 {
-                    dictionary.Add(variables[n], values[n]);
-                    variables[n].SetValue(values[n]);
+                    dictionary.Add(Variables[n], values[n]);
+                    Variables[n].SetValue(values[n]);
                 }
-                var value = expression.GetValue();
+                var value = Expression.GetValue();
                 ++count;
-                await Task.Delay(100);
-                AddedResultRow?.Invoke(this, new CalculatingEventArgs<T>
-                    (new CalculatingResult<T>(value, dictionary), count / (double)resultRowCount));
+                AddedResult?.Invoke(this, new CalculatingResultEventArgs<T>
+                    (new CalculatingResult<T>(value, dictionary), count / (double)Options.IterationsCount));
             }
+            State = CalculatingState.None;
+        }
+
+        public void StopCalculate()
+        {
+            State = CalculatingState.None;
+        }
+
+        public void PauseCalculate()
+        {
+            State = CalculatingState.Pause;
+            _pauseEvent.Reset();
+        }
+
+        public void ResumeCalculate()
+        {
+            _pauseEvent.Set();
+            State = CalculatingState.Run;
         }
     }
 }

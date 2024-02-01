@@ -7,7 +7,9 @@
         mc:Ignorable="d"
         Title="{DynamicResource MainTitle}" Icon="{DynamicResource MainIcon}" Height="450" Width="800">
     <Window.TaskbarItemInfo>
-        <TaskbarItemInfo ProgressState="Normal" ProgressValue="{Binding CalculatingProgressValue}"/>
+        <TaskbarItemInfo
+            ProgressState="{Binding CalculatingProgressState, Converter={StaticResource CalculatingStateConverter}}"
+            ProgressValue="{Binding CalculatingProgressValue}"/>
     </Window.TaskbarItemInfo>
     <DockPanel LastChildFill="True">
         <Grid DockPanel.Dock="Top">
@@ -26,10 +28,23 @@
                 <Button Grid.Column="2" Content="Edit" Command="{Binding EditExpressionCommand}"/>
             </Grid>
             <WrapPanel Grid.Row="1" FlowDirection="RightToLeft">
+                <Button Content="Calculate" Command="{Binding StartCommand}" Visibility="{Binding CalculatingProgressState,
+                    Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=None}"/>
+                <Button Content="Settings" Command="{Binding SettingsCommand}" Visibility="{Binding CalculatingProgressState,
+                    Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=None}"/>
                 
-                <Button Grid.Column="2" Content="Calculate" Command="{Binding CalculateCommand}"/>
-                <Button Grid.Column="2" Content="Settings" Command="{Binding SettingsCommand}"/>
-                <ProgressBar Width="200" Value="{Binding CalculatingProgressValue}"/>
+                <Button Content="Pause" Command="{Binding PauseCommand}" Visibility="{Binding CalculatingProgressState,
+                    Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=!None}"/>
+                <Button Content="Resume" Command="{Binding ResumeCommand}" Visibility="{Binding CalculatingProgressState,
+                    Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=!None}"/>
+                <Button Content="Stop" Command="{Binding StopCommand}" Visibility="{Binding CalculatingProgressState,
+                    Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=!None}"/>
+                <ProgressBar Width="200" Value="{Binding CalculatingProgressValue}"
+                             Foreground="{Binding CalculatingProgressState, Converter={StaticResource
+                             CalculatingStateConverter}}" IsIndeterminate="{Binding CalculatingProgressState,
+                             Converter={StaticResource CalculatingStateConverter}}" Visibility="{Binding
+                             CalculatingProgressState, Converter={StaticResource EnumToVisibilityConverter},
+                             ConverterParameter=!None}"/>
             </WrapPanel>
         </Grid>
         <DataGrid x:Name="dataGrid" ItemsSource="{Binding CalculatingResults}" IsReadOnly="True"/>

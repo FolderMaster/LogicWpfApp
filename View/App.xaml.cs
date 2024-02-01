@@ -33,6 +33,7 @@ namespace View
             _host = Host.CreateDefaultBuilder().ConfigureServices((services) =>
             {
                 services.AddSingleton<IResourceService, WindowResourceService>();
+                services.AddSingleton<IBackgroundWorker, WpfBackgroundWorker>();
 
                 services.AddSingleton((s) => 
                 {
@@ -43,6 +44,10 @@ namespace View
                         new NamedBoolVariable("A"),
                         new NamedBoolVariable("B")
                     };
+                    for (int n = 0; n < 12; n++)
+                    {
+                        variables.Add(new NamedBoolVariable("V" + n));
+                    }
                     result.Variables = variables;
 
                     var expression = new Expression<bool>();
