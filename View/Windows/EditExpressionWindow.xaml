@@ -8,14 +8,13 @@
         xmlns:ds="clr-namespace:View.Implementations.DialogServices"
         mc:Ignorable="d"
         Icon="{DynamicResource MainIcon}" Title="Edit expression" Height="450" Width="800">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <TextBox Text="{Binding ExpressionText}"/>
-        <Grid Grid.Row="1">
+    <DockPanel LastChildFill="True">
+        <TextBox DockPanel.Dock="Top" Text="{Binding ExpressionText}"/>
+        <WrapPanel DockPanel.Dock="Bottom" Orientation="Horizontal" FlowDirection="RightToLeft">
+            <Button ds:DialogWindow.DialogResultInstance="True" IsDefault="True" Content="{StaticResource OKHeader}"/>
+            <Button ds:DialogWindow.DialogResultInstance="False" Content="{StaticResource CancelHeader}"/>
+        </WrapPanel>
+        <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" MinWidth="60"/>
                 <ColumnDefinition Width="Auto"/>
@@ -29,9 +28,5 @@
               ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch"/>
             <c:ExpressionControl Grid.Column="2" Expression="{Binding Expression, Mode=OneWay}"/>
         </Grid>
-        <WrapPanel Grid.Row="2" Orientation="Horizontal" FlowDirection="RightToLeft">
-            <Button IsDefault="True" Content="{StaticResource OKHeader}"/>
-            <Button Content="{StaticResource CancelHeader}"/>
-        </WrapPanel>
-    </Grid>
+    </DockPanel>
 </ds:DialogWindow>

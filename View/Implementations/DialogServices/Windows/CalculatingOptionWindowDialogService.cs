@@ -4,16 +4,16 @@ using ViewModel;
 
 namespace View.Implementations.DialogServices.Windows
 {
-    public class EditExpressionWindowDialogService : BaseWindowDialogService
+    public class CalculatingOptionWindowDialogService : BaseWindowDialogService
     {
         private Session _session;
 
-        public EditExpressionWindowDialogService(Session session)
+        public CalculatingOptionWindowDialogService(Session session)
         {
             _session = session;
         }
 
         protected override DialogWindow CreateWindow(object? parameter) =>
-            new EditExpressionWindow(_session);
+            new CalculatingOptionWindow(_session);
     }
 }

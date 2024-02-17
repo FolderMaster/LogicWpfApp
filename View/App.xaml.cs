@@ -1,8 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
 using System.Windows;
+using System.Collections.ObjectModel;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Threading;
 
 using View.Implementations;
 using View.Implementations.DialogServices.MessageBoxes;
@@ -16,6 +19,7 @@ using Model.Logic.Expressions;
 using Model.Logic.Operators.PairOperators;
 using Model.Logic.Operators.SingleOperators;
 using Model.Logic.Variables;
+using Model.Logic.Calculating;
 
 namespace View
 {
@@ -26,7 +30,7 @@ namespace View
     {
         private readonly IHost _host;
 
-        private IDialogService _errorDialogService;
+        private Mutex _mutex;
 
         public App()
         {
@@ -39,12 +43,12 @@ namespace View
                 {
                     var result = new Session();
 
-                    var variables = new List<INamedVariable<bool>>()
+                    var variables = new ObservableCollection<INamedVariable<bool>>()
                     {
                         new NamedBoolVariable("A"),
                         new NamedBoolVariable("B")
                     };
-                    for (int n = 0; n < 12; n++)
+                    for (int n = 0; n < 15; n++)
                     {
                         variables.Add(new NamedBoolVariable("V" + n));
                     }
@@ -63,6 +67,7 @@ namespace View
                     expression.Add(result.Variables[0]);
                     expression.Add(new EqualOperator());
                     expression.Add(result.Variables[1]);
+                    result.CalculatingOptions = new BoolCalculatingOptions(variables);
                     result.Expression = expression;
 
                     return result;
@@ -74,6 +79,7 @@ namespace View
                 services.AddSingleton<WarningMessageBoxDialogService>();
 
                 services.AddSingleton<EditExpressionWindowDialogService>();
+                services.AddSingleton<CalculatingOptionWindowDialogService>();
 
                 services.AddSingleton<MainWindow>();
             }).Build();
@@ -87,10 +93,23 @@ namespace View
             base.OnStartup(e);
             _host.Start();
 
-            _errorDialogService =
-                _host.Services.GetRequiredService<ErrorMessageBoxDialogService>();
+            var guid = Assembly.GetExecutingAssembly().GetCustomAttribute<GuidAttribute>().
+                Value.ToString();
+            var isCreatedNew = false;
+            _mutex = new Mutex(true, guid, out isCreatedNew);
+
+            if (!isCreatedNew)
+            {
+                _host.Services.GetRequiredService<ErrorMessageBoxDialogService>().
+                    ShowDialog(_host.Services.GetRequiredService<IResourceService>().
+                    GetResource("DoubleLaunchErrorMessage"));
+                Current.Shutdown();
+                return;
+            }
+
             AppDomain.CurrentDomain.FirstChanceException += (sender, e) =>
-                _errorDialogService.ShowDialog(e.Exception.Message);
+                _host.Services.GetRequiredService<ErrorMessageBoxDialogService>().
+                ShowDialog(e.Exception.Message);
 
             MainWindow = _host.Services.GetRequiredService<MainWindow>();
             MainWindow.Show();
@@ -103,6 +122,8 @@ namespace View
         {
             _host.StopAsync();
             _host.Dispose();
+
+            _mutex.ReleaseMutex();
 
             base.OnExit(e);
         }

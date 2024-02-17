@@ -5,6 +5,8 @@ namespace Model.Logic.Calculating
 {
     public class CalculatingManager<T>
     {
+        private static int _updateFrequency = 100000;
+
         private AutoResetEvent _pauseEvent = new(true);
 
         private CalculatingState _state = CalculatingState.None;
@@ -30,7 +32,9 @@ namespace Model.Logic.Calculating
 
         public event EventHandler<CalculatingStateEventArgs>? StateChanged;
 
-        public event EventHandler<CalculatingResultEventArgs<T>>? AddedResult;
+        public event EventHandler<CalculatingProgressEventArgs>? ProgressUpdated;
+
+        public event EventHandler<CalculatingResultEventArgs<T>>? ResultCalculated;
 
         public void StartCalculate()
         {
@@ -60,17 +64,22 @@ namespace Model.Logic.Calculating
                 {
                     throw new ArgumentException();
                 }
-                var dictionary = new Dictionary<INamedVariable<T>, T>();
+                var dictionary = new Dictionary<string, T>();
                 for (int n = 0; n < Variables.Count; ++n)
                 {
-                    dictionary.Add(Variables[n], values[n]);
+                    dictionary.Add(Variables[n].Name, values[n]);
                     Variables[n].SetValue(values[n]);
                 }
                 var value = Expression.GetValue();
+                result.Add(new CalculatingResult<T>(value, dictionary));
                 ++count;
-                AddedResult?.Invoke(this, new CalculatingResultEventArgs<T>
-                    (new CalculatingResult<T>(value, dictionary), count / (double)Options.IterationsCount));
+                if (count % _updateFrequency == 0 || count == Options.IterationsCount)
+                {
+                    ProgressUpdated?.Invoke(this, new CalculatingProgressEventArgs
+                        (count / (double)Options.IterationsCount));
+                }
             }
+            ResultCalculated?.Invoke(this, new CalculatingResultEventArgs<T>(result));
             State = CalculatingState.None;
         }
 

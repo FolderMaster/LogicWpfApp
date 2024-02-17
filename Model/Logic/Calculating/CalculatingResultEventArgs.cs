@@ -2,14 +2,11 @@
 {
     public class CalculatingResultEventArgs<T> : EventArgs
     {
-        public CalculatingResult<T> ResultRow { get; private  set; }
+        public IEnumerable<CalculatingResult<T>> Result { get; private set; }
 
-        public double ProgressValue { get; private set; }
-
-        public CalculatingResultEventArgs(CalculatingResult<T> resultRow, double progressValue)
+        public CalculatingResultEventArgs(IEnumerable<CalculatingResult<T>> result)
         {
-            ResultRow = resultRow;
-            ProgressValue = progressValue;
+            Result = result;
         }
     }
 }

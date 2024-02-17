@@ -12,13 +12,15 @@ namespace View.Windows
     public partial class MainWindow : Window
     {
         public MainWindow(ErrorMessageBoxDialogService errorDialog,
+            InformationMessageBoxDialogService informationDialog,
             EditExpressionWindowDialogService editExpressionDialog,
+            CalculatingOptionWindowDialogService calculatingOptionDialog,
             IBackgroundWorker backgroundWorker, Session session)
         {
             InitializeComponent();
 
-            DataContext = new MainVM(errorDialog, editExpressionDialog,
-                backgroundWorker, session);
+            DataContext = new MainVM(errorDialog, informationDialog,
+                editExpressionDialog, calculatingOptionDialog, backgroundWorker, session);
         }
     }
 }

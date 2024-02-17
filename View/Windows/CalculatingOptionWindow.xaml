@@ -1,0 +1,24 @@
+﻿<ds:DialogWindow x:Class="View.Windows.CalculatingOptionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:View.Windows"
+        xmlns:ds="clr-namespace:View.Implementations.DialogServices"
+        mc:Ignorable="d"
+        x:Name="CalculatingOptionsWindow"
+        Title="Calculating options" Icon="{StaticResource SettingsIcon}"
+        Height="300" Width="200" ResizeMode="NoResize">
+    <DockPanel LastChildFill="True">
+        <Label DockPanel.Dock="Top" Content="Variables:"/>
+        <WrapPanel DockPanel.Dock="Bottom" Orientation="Horizontal" FlowDirection="RightToLeft">
+            <Button ds:DialogWindow.DialogResultInstance="True" IsDefault="True" Content="{StaticResource OKHeader}"/>
+            <Button ds:DialogWindow.DialogResultInstance="False" Content="{StaticResource CancelHeader}"/>
+        </WrapPanel>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <StackPanel x:Name="variablesPanel"/>
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
+</ds:DialogWindow>

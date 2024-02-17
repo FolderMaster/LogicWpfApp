@@ -14,4 +14,6 @@
     <sys:String x:Key="NoHeader">No</sys:String>
     
     <sys:String x:Key="AddHeader">Add</sys:String>
+
+    <sys:String x:Key="DoubleLaunchErrorMessage">The application is already launched!</sys:String>
 </ResourceDictionary>

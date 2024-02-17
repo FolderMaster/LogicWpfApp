@@ -27,7 +27,13 @@
     <DrawingImage x:Key="MainIcon">
         <DrawingImage.Drawing>
             <Binding Source="pack://application:,,,/View;component/Resources/Images/LogicIcon.svg"
-             Converter="{StaticResource SvgToDrawingGroupConverter}"/>
+                Converter="{StaticResource SvgToDrawingGroupConverter}"/>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    <DrawingImage x:Key="SettingsIcon">
+        <DrawingImage.Drawing>
+            <Binding Source="pack://application:,,,/View;component/Resources/Images/SettingsIcon.svg"
+                Converter="{StaticResource SvgToDrawingGroupConverter}"/>
         </DrawingImage.Drawing>
     </DrawingImage>
 </ResourceDictionary>

@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.Windows.Input;
+﻿using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -11,16 +10,21 @@ namespace ViewModel.VMs
 {
     public partial class MainVM : ObservableObject
     {
+        private Stopwatch _stopwatch = new Stopwatch();
+
         private CalculatingManager<bool> _calculatingManager = new();
 
-        private Session _session;
+        [ObservableProperty]
+        private Session session;
 
         private IBackgroundWorker _backgroundWorker;
+
+        private IDialogService _informationDialog;
 
         private string _expressionText;
 
         [ObservableProperty]
-        private ObservableCollection<CalculatingResult<bool>> calculatingResults = new();
+        private IEnumerable<CalculatingResult<bool>>? calculatingResults = null;
 
         [ObservableProperty]
         private double calculatingProgressValue;
@@ -46,24 +50,32 @@ namespace ViewModel.VMs
 
         public RelayCommand ResumeCommand { get; private set; }
 
-        public MainVM(IDialogService errorDialog, IDialogService editExpressionDialog,
+        public MainVM(IDialogService errorDialog, IDialogService informationDialog,
+            IDialogService editExpressionDialog, IDialogService calculatingOptionDialog,
             IBackgroundWorker backgroundWorker, Session session)
         {
-            _session = session;
+            Session = session;
+            _calculatingManager.ProgressUpdated += CalculatingManager_ProgressUpdated;
+            _calculatingManager.StateChanged += CalculatingManager_StateChanged;
+            _calculatingManager.ResultCalculated += CalculatingManager_ResultCalculated;
             _backgroundWorker = backgroundWorker;
-            _expressionText = _session.Expression.ToString();
-            _calculatingManager.Expression = session.Expression;
-            _calculatingManager.Variables = session.Variables;
-            _calculatingManager.Options = new BoolCalculatingOptions(session.Variables.Count);
+            _informationDialog = informationDialog;
+            _expressionText = Session.Expression.ToString();
+            SettingsCommand = new RelayCommand(() =>
+            {
+                var dialogResult = calculatingOptionDialog.ShowDialog();
+            });
             EditExpressionCommand = new RelayCommand(() =>
             {
                 var dialogResult = editExpressionDialog.ShowDialog();
             });
             StartCommand = new RelayCommand(() =>
             {
-                CalculatingResults.Clear();
-                _calculatingManager.AddedResult += CalculatingManager_AddedResult;
-                _calculatingManager.StateChanged += CalculatingManager_StateChanged;
+                _stopwatch.Start();
+                _calculatingManager.Expression = Session.Expression;
+                _calculatingManager.Variables = Session.Variables;
+                _calculatingManager.Options = Session.CalculatingOptions;
+                CalculatingResults = null;
                 _calculatingManager.StartCalculate();
             }, () => CalculatingProgressState == CalculatingState.None);
             StopCommand = new RelayCommand(_calculatingManager.StopCalculate,
@@ -74,9 +86,22 @@ namespace ViewModel.VMs
                 () => CalculatingProgressState == CalculatingState.Pause);
         }
 
+        private void CalculatingManager_ResultCalculated(object? sender,
+            CalculatingResultEventArgs<bool> e)
+        {
+            _backgroundWorker.Run(() => CalculatingResults = e.Result);
+        }
+
+        private void CalculatingManager_ProgressUpdated(object? sender,
+            CalculatingProgressEventArgs e)
+        {
+            _backgroundWorker.Run(() => CalculatingProgressValue = e.ProgressValue);
+        }
+
         private void CalculatingManager_StateChanged(object? sender, CalculatingStateEventArgs e)
         {
-            _backgroundWorker.Run(() => {
+            _backgroundWorker.Run(() =>
+            {
                 CalculatingProgressState = e.State;
                 StartCommand.NotifyCanExecuteChanged();
                 StopCommand.NotifyCanExecuteChanged();
@@ -85,19 +110,13 @@ namespace ViewModel.VMs
             });
             if (e.State == CalculatingState.None)
             {
-                _calculatingManager.AddedResult -= CalculatingManager_AddedResult;
-                _calculatingManager.StateChanged -= CalculatingManager_StateChanged;
-                _backgroundWorker.Run(() => CalculatingProgressValue = 0);
+                _stopwatch.Stop();
+                _backgroundWorker.Run(() =>
+                {
+                    CalculatingProgressValue = 0;
+                    _informationDialog.ShowDialog($"Completed!\nTime:{_stopwatch.Elapsed}");
+                });
             }
-        }
-
-        private void CalculatingManager_AddedResult(object? sender, CalculatingResultEventArgs<bool> e)
-        {
-            _backgroundWorker.Run(() =>
-            {
-                CalculatingResults.Add(e.ResultRow);
-                CalculatingProgressValue = e.ProgressValue;
-            });
         }
     }
 }

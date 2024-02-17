@@ -1,5 +1,7 @@
-﻿using Model.Logic.Expressions;
+﻿using Model.Logic.Calculating;
+using Model.Logic.Expressions;
 using Model.Logic.Variables;
+using System.Collections.ObjectModel;
 
 namespace ViewModel
 {
@@ -7,6 +9,8 @@ namespace ViewModel
     {
         public IExpression<bool> Expression { get; set; }
 
-        public IList<INamedVariable<bool>> Variables { get; set; }
+        public ObservableCollection<INamedVariable<bool>> Variables { get; set; }
+
+        public BoolCalculatingOptions CalculatingOptions { get; set; }
     }
 }
