@@ -1,4 +1,4 @@
-﻿using Model.Logic.Calculating;
+﻿using Model.Calculating;
 using Model.Logic.Expressions;
 using Model.Logic.Variables;
 using System.Collections.ObjectModel;

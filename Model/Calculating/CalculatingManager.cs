@@ -1,7 +1,7 @@
 ﻿using Model.Logic.Expressions;
 using Model.Logic.Variables;
 
-namespace Model.Logic.Calculating
+namespace Model.Calculating
 {
     public class CalculatingManager<T>
     {
@@ -56,7 +56,7 @@ namespace Model.Logic.Calculating
                 {
                     break;
                 }
-                if(State == CalculatingState.Pause)
+                if (State == CalculatingState.Pause)
                 {
                     _pauseEvent.WaitOne();
                 }

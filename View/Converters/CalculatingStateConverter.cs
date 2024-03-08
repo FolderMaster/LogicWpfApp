@@ -3,8 +3,7 @@ using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Shell;
-
-using Model.Logic.Calculating;
+using Model.Calculating;
 
 namespace View.Converters
 {

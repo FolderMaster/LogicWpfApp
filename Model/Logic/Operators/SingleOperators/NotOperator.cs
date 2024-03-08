@@ -4,8 +4,8 @@
     {
         public override int Priority => 0;
 
-        protected override bool CalculateValue() => !Operand.GetValue();
+        public NotOperator() : base(@"!") { }
 
-        public override string ToString() => "!";
+        protected override bool CalculateValue() => !Operand.GetValue();
     }
 }

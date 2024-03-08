@@ -5,8 +5,7 @@ using System.Windows.Data;
 using View.Implementations.DialogServices;
 
 using ViewModel;
-
-using Model.Logic.Calculating;
+using Model.Calculating;
 
 namespace View.Windows
 {

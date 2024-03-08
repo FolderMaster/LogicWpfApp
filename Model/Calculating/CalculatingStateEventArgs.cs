@@ -1,4 +1,4 @@
-﻿namespace Model.Logic.Calculating
+﻿namespace Model.Calculating
 {
     public class CalculatingStateEventArgs : EventArgs
     {

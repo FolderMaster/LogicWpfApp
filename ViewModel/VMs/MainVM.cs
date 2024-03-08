@@ -1,8 +1,7 @@
 ﻿using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-
-using Model.Logic.Calculating;
+using Model.Calculating;
 
 using ViewModel.Interfaces;
 

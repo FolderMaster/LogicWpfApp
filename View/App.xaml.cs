@@ -19,7 +19,9 @@ using Model.Logic.Expressions;
 using Model.Logic.Operators.PairOperators;
 using Model.Logic.Operators.SingleOperators;
 using Model.Logic.Variables;
-using Model.Logic.Calculating;
+using Model.Calculating;
+using Model.Parsing;
+using Model.Parsing.Tokenization;
 
 namespace View
 {
@@ -92,6 +94,9 @@ namespace View
         {
             base.OnStartup(e);
             _host.Start();
+
+            var tokenizator = new Tokenizator();
+            var tokens = tokenizator.Parse("sf => ls = !1");
 
             var guid = Assembly.GetExecutingAssembly().GetCustomAttribute<GuidAttribute>().
                 Value.ToString();

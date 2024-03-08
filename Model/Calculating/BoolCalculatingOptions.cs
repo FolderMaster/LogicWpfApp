@@ -1,6 +1,6 @@
 ﻿using Model.Logic.Variables;
 
-namespace Model.Logic.Calculating
+namespace Model.Calculating
 {
     public class BoolCalculatingOptions : ICalculatingOptions<bool>
     {
@@ -30,7 +30,7 @@ namespace Model.Logic.Calculating
                 foreach (var variableOption in VariablesOptions)
                 {
                     var value = true;
-                    if(variableOption.Value == null)
+                    if (variableOption.Value == null)
                     {
                         value = (number & 1) == 1;
                         number = number >> 1;

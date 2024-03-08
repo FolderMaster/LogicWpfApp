@@ -3,9 +3,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Collections.Specialized;
-
-using Model.Logic.Calculating;
 using Model.Logic.Variables;
+using Model.Calculating;
 
 namespace View.Controls
 {
