@@ -4,7 +4,7 @@
     {
         public override int Priority => 1;
 
-        public EqualOperator() : base(@"=") { }
+        public EqualOperator() : base("=") { }
 
         protected override bool CalculateValue() =>
             LeftOperand.GetValue() == RightOperand.GetValue();

@@ -1,37 +1,12 @@
-﻿using Model.Logic.Operators.PairOperators;
-using Model.Logic.Operators.SingleOperators;
-using Model.Logic.Variables;
+﻿using System.Text.RegularExpressions;
 
-using System.Reflection;
-using System.Text.RegularExpressions;
-
-namespace Model.Parsing.Tokenization
+namespace Model.Parsing
 {
     public class Tokenizator : ITokenizator
     {
-        private readonly List<ILexeme> _lexemes = new();
+        private readonly IEnumerable<ILexeme> _lexemes;
 
-        public Tokenizator() => GetTokens();
-
-        private IEnumerable<Type> GetTypes<T>(Type[] types) => types.
-            Where((t) => typeof(T).IsAssignableFrom(t) &&
-            typeof(ILexeme).IsAssignableFrom(t) && t.IsClass);
-
-        private void GetLexemes(IEnumerable<Type> types)
-        {
-            foreach (var type in types)
-            {
-                _lexemes.Add((ILexeme)Activator.CreateInstance(type));
-            }
-        }
-
-        private void GetTokens()
-        {
-            var types = Assembly.GetExecutingAssembly().GetTypes();
-            GetLexemes(GetTypes<IVariable<bool>>(types));
-            GetLexemes(GetTypes<ISingleOperator<bool>>(types));
-            GetLexemes(GetTypes<IPairOperator<bool>>(types));
-        }
+        public Tokenizator(IEnumerable<ILexeme> lexemes) => _lexemes = lexemes;
 
         private List<Token> ResolveConflicts(List<Token> tokens)
         {
@@ -49,17 +24,19 @@ namespace Model.Parsing.Tokenization
             return result;
         }
 
-        private List<ParsingErrorPart> CheckErrors(IEnumerable<Token> tokens, int index, int length, string word)
+        private List<ParsingErrorPart> CheckErrors(IEnumerable<Token> tokens, int index,
+            int length, string word)
         {
             var result = new List<ParsingErrorPart>();
             var currentIndex = index;
-            foreach(var token in tokens)
+            foreach (var token in tokens)
             {
                 if (currentIndex < token.Index)
                 {
                     var currentLength = token.Index - currentIndex;
-                    result.Add(new ParsingErrorPart(word.Substring(currentIndex - index, currentLength),
-                        currentIndex, currentLength, "Token not finded!", "Tokenizator"));
+                    result.Add(new ParsingErrorPart(word.Substring(currentIndex - index,
+                        currentLength), currentIndex, currentLength,
+                        "Token not finded!", "Tokenizator"));
                 }
                 currentIndex = token.Index + token.Length;
             }
@@ -82,11 +59,11 @@ namespace Model.Parsing.Tokenization
                 var tokens = new List<Token>();
                 foreach (var lexeme in _lexemes)
                 {
-                    var lexemeMatch = Regex.Match(wordMatch.Value, lexeme.LexemePattern,
+                    var lexemeMatch = Regex.Match(wordMatch.Value, lexeme.Pattern,
                         RegexOptions.IgnoreCase);
                     while (lexemeMatch.Success)
                     {
-                        tokens.Add(new Token(lexemeMatch.Value, lexeme.LexemeType,
+                        tokens.Add(new Token(lexemeMatch.Value, lexeme,
                             lexemeMatch.Index + wordMatch.Index, lexemeMatch.Length));
                         lexemeMatch = lexemeMatch.NextMatch();
                     }
@@ -97,7 +74,7 @@ namespace Model.Parsing.Tokenization
                 result.AddRange(tokens);
                 wordMatch = wordMatch.NextMatch();
             }
-            if(errors.Count > 0)
+            if (errors.Count > 0)
             {
                 throw new ParsingException(errors);
             }

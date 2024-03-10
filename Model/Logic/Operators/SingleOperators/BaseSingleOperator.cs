@@ -1,8 +1,8 @@
-﻿using Model.Parsing.Tokenization;
+﻿using Model.Parsing;
 
 namespace Model.Logic.Operators.SingleOperators
 {
-    public abstract class BaseSingleOperator<T> : ISingleOperator<T>, ILexeme
+    public abstract class BaseSingleOperator<T> : ISingleOperator<T>
     {
         private IValue<T> _operand;
 
@@ -15,10 +15,6 @@ namespace Model.Logic.Operators.SingleOperators
         private string _pattern;
 
         protected BaseSingleOperator(string pattern) => _pattern = pattern;
-
-        public string LexemePattern => _pattern;
-
-        public string LexemeType => "SingleOperator";
 
         public abstract int Priority { get; }
 

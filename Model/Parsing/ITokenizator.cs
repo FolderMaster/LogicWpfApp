@@ -1,4 +1,4 @@
-﻿namespace Model.Parsing.Tokenization
+﻿namespace Model.Parsing
 {
     public interface ITokenizator
     {

@@ -1,8 +1,6 @@
-﻿using Model.Parsing.Tokenization;
-
-namespace Model.Logic.Operators.PairOperators
+﻿namespace Model.Logic.Operators.PairOperators
 {
-    public abstract class BasePairOperator<T> : IPairOperator<T>, ILexeme
+    public abstract class BasePairOperator<T> : IPairOperator<T>
     {
         private IValue<T> _leftOperand;
 
@@ -13,8 +11,6 @@ namespace Model.Logic.Operators.PairOperators
         protected BasePairOperator(string lexemePattern) => _lexemePattern = lexemePattern;
 
         public string LexemePattern => _lexemePattern;
-
-        public string LexemeType => "PairOperator";
 
         public IValue<T> LeftOperand
         {

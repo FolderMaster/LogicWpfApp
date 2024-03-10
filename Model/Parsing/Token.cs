@@ -8,12 +8,12 @@
 
         public int Length { get; private set; }
 
-        public string Type { get; private set; }
+        public ILexeme Lexeme { get; private set; }
 
-        public Token(string value, string type, int index, int length)
+        public Token(string value, ILexeme lexeme, int index, int length)
         {
             Value = value;
-            Type = type;
+            Lexeme = lexeme;
             Index = index;
             Length = length;
         }

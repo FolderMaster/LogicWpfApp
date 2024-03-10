@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Collections.Generic;
 
 using View.Implementations;
 using View.Implementations.DialogServices.MessageBoxes;
@@ -21,7 +22,7 @@ using Model.Logic.Operators.SingleOperators;
 using Model.Logic.Variables;
 using Model.Calculating;
 using Model.Parsing;
-using Model.Parsing.Tokenization;
+using Model;
 
 namespace View
 {
@@ -50,7 +51,7 @@ namespace View
                         new NamedBoolVariable("A"),
                         new NamedBoolVariable("B")
                     };
-                    for (int n = 0; n < 15; n++)
+                    for (int n = 0; n < 24; n++)
                     {
                         variables.Add(new NamedBoolVariable("V" + n));
                     }
@@ -95,8 +96,55 @@ namespace View
             base.OnStartup(e);
             _host.Start();
 
-            var tokenizator = new Tokenizator();
-            var tokens = tokenizator.Parse("sf => ls = !1");
+            var lexemes = new List<ILexeme>()
+            {
+                new BaseLexeme("0|1|true|false", (value, context) => (value) switch
+                {
+                    "false" => new BoolLiteral(false),
+                    "0" => new BoolLiteral(false),
+                    "true" => new BoolLiteral(true),
+                    "1" => new BoolLiteral(true),
+                    _ => throw new NotImplementedException()
+                }),
+                new BaseLexeme(@"\w+", (value, context) => {
+                    var variable = (INamedVariable<bool>)null;
+                    foreach (var element in (IEnumerable<IValue<bool>>)context)
+                    {
+                        if(element is NamedBoolVariable namedVariable)
+                        {
+                            if (value == namedVariable.Name)
+                            {
+                                variable = namedVariable;
+                            }
+                        }
+                        if (variable != null)
+                        {
+                            break;
+                        }
+                    }
+                    if(variable == null)
+                    {
+                        return new NamedBoolVariable(value);
+                    }
+                    else
+                    {
+                        return variable;
+                    }
+                }),
+                new BaseLexeme(@"\!|\^|\||&|=>|=", (value, context) => (value) switch
+                {
+                    "!" => new NotOperator(),
+                    "^" => new XorOperator(),
+                    "|" => new OrOperator(),
+                    "&" => new AndOperator(),
+                    "=>" => new ImplicateOperator(),
+                    "=" => new EqualOperator(),
+                    _ => throw new NotImplementedException()
+                }),
+            };
+            var tokenizator = new Tokenizator(lexemes);
+            var parser = new Parser();
+            var expression = parser.Parse(tokenizator.Parse("a => a = !b & 1"));
 
             var guid = Assembly.GetExecutingAssembly().GetCustomAttribute<GuidAttribute>().
                 Value.ToString();

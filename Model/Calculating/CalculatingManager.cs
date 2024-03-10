@@ -50,11 +50,11 @@ namespace Model.Calculating
         {
             var result = new List<CalculatingResult<T>>();
             var count = 0;
-            foreach (var values in Options.GenerateArgs())
+            Parallel.ForEach(Options.GenerateArgs(), (values, loopState) =>
             {
                 if (State == CalculatingState.None)
                 {
-                    break;
+                    loopState.Stop();
                 }
                 if (State == CalculatingState.Pause)
                 {
@@ -78,7 +78,7 @@ namespace Model.Calculating
                     ProgressUpdated?.Invoke(this, new CalculatingProgressEventArgs
                         (count / (double)Options.IterationsCount));
                 }
-            }
+            });
             ResultCalculated?.Invoke(this, new CalculatingResultEventArgs<T>(result));
             State = CalculatingState.None;
         }

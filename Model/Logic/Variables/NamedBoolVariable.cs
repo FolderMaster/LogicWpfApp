@@ -1,16 +1,10 @@
-﻿using Model.Parsing.Tokenization;
-
-namespace Model.Logic.Variables
+﻿namespace Model.Logic.Variables
 {
-    public class NamedBoolVariable : INamedVariable<bool>, ILexeme
+    public class NamedBoolVariable : INamedVariable<bool>
     {
         protected bool _value;
 
         public string Name { get; set; }
-
-        public string LexemePattern => @"\w+";
-
-        public string LexemeType => "Variable";
 
         public bool GetValue() => _value;
 

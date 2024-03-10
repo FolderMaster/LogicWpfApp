@@ -1,14 +1,8 @@
-﻿using Model.Parsing.Tokenization;
-
-namespace Model.Logic.Variables
+﻿namespace Model.Logic.Variables
 {
-    public class BoolLiteral : IVariable<bool>, ILexeme
+    public class BoolLiteral : IVariable<bool>
     {
         public bool _value;
-
-        public string LexemePattern => "0|1|true|false";
-
-        public string LexemeType => "Literal";
 
         public BoolLiteral() { }
 
