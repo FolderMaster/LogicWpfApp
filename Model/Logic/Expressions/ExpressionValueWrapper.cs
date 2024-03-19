@@ -33,5 +33,7 @@ namespace Model.Logic.Expressions
         public ExpressionValueWrapper(IValue<T> value) => Value = value;
 
         public T GetValue() => Value.GetValue();
+
+        public object Clone() => Value.Clone();
     }
 }

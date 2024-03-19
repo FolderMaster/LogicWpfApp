@@ -17,5 +17,7 @@
         public NamedBoolVariable(string name, bool value) : this(name) => _value = value;
 
         public override string ToString() => Name.ToString();
+
+        public object Clone() => new NamedBoolVariable(Name, _value);
     }
 }

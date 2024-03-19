@@ -4,7 +4,6 @@ using System.Windows.Data;
 
 using View.Implementations.DialogServices;
 
-using ViewModel;
 using Model.Calculating;
 
 namespace View.Windows
@@ -14,12 +13,11 @@ namespace View.Windows
     /// </summary>
     public partial class CalculatingOptionWindow : DialogWindow
     {
-        public BoolCalculatingOptions CalculatingOptions { get; set; }
-
-        public CalculatingOptionWindow(Session session)
+        public CalculatingOptionWindow(ICalculatingOptions<bool> calculatingOptions)
         {
             InitializeComponent();
-            CalculatingOptions = session.CalculatingOptions;
+
+            ResultValue = calculatingOptions;
             FillVariables();
         }
 
@@ -32,7 +30,7 @@ namespace View.Windows
             };
             Binding binding = new Binding();
             binding.ElementName = "CalculatingOptionsWindow";
-            binding.Path = new PropertyPath($"{nameof(CalculatingOptions)}." +
+            binding.Path = new PropertyPath($"{nameof(ResultValue)}." +
                 $"{nameof(BoolCalculatingOptions.VariablesOptions)}[{name}]");
             checkBox.SetBinding(CheckBox.IsCheckedProperty, binding);
             return checkBox;
@@ -40,7 +38,7 @@ namespace View.Windows
 
         private void FillVariables()
         {
-            foreach (var variable in CalculatingOptions.VariablesOptions)
+            foreach (var variable in ((BoolCalculatingOptions)ResultValue).VariablesOptions)
             {
                 variablesPanel.Children.Add(CreateVariableElement(variable.Key));
             }

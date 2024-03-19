@@ -1,6 +1,4 @@
-﻿using Model.Parsing;
-
-namespace Model.Logic.Operators.SingleOperators
+﻿namespace Model.Logic.Operators.SingleOperators
 {
     public abstract class BaseSingleOperator<T> : ISingleOperator<T>
     {
@@ -30,5 +28,7 @@ namespace Model.Logic.Operators.SingleOperators
         }
 
         public override string ToString() => _pattern;
+
+        public abstract object Clone();
     }
 }

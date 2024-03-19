@@ -6,7 +6,7 @@ using Model.Logic.Expressions;
 
 namespace View.Controls
 {
-    public partial class ExpressionControl : UserControl
+    public partial class ConstructorControl : UserControl
     {
         private static Brush _borderBrush = new SolidColorBrush(Color.FromArgb(255, 150, 150, 150));
 
@@ -20,22 +20,22 @@ namespace View.Controls
 
         private static DependencyProperty ExpressionProperty =
             DependencyProperty.Register(nameof(Expression), typeof(IExpression<bool>),
-                typeof(ExpressionControl), new FrameworkPropertyMetadata(null, OnExpressionChanged));
+                typeof(ConstructorControl), new FrameworkPropertyMetadata(null, OnExpressionChanged));
 
-        public ExpressionControl()
+        public ConstructorControl()
         {
             InitializeComponent();
         }
 
         private static void OnExpressionChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            var control = (ExpressionControl)sender;
+            var control = (ConstructorControl)sender;
             var expression = control.Expression;
             control.mainLayout.Children.Clear();
             foreach(var value in expression)
             {
                 var text = new TextBlock()
-                {
+                { 
                     Text = value.Value.ToString()
                 };
                 var border = new Border()

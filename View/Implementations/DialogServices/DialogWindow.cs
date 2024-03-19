@@ -8,6 +8,16 @@ namespace View.Implementations.DialogServices
     {
         public bool? ExtendedDialogResult { get; set; }
 
+        public object ResultValue
+        {
+            get => GetValue(ResultValueProperty);
+            set => SetValue(ResultValueProperty, value);
+        }
+
+        public static readonly DependencyProperty ResultValueProperty =
+            DependencyProperty.Register(nameof(ResultValue), typeof(object), typeof(DialogWindow),
+                new PropertyMetadata(null));
+
         public static readonly DependencyProperty DialogResultInstance = 
             DependencyProperty.RegisterAttached(nameof(DialogResultInstance), typeof(bool?),
                 typeof(DialogWindow), new PropertyMetadata(null, OnDialogResultInstanceChanged));

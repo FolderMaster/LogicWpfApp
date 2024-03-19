@@ -13,5 +13,7 @@
         public override string ToString() => _value.ToString();
 
         public void SetValue(bool value) => _value = value;
+
+        public object Clone() => new BoolLiteral(_value);
     }
 }

@@ -7,5 +7,7 @@
         public NotOperator() : base("!") { }
 
         protected override bool CalculateValue() => !Operand.GetValue();
+
+        public override object Clone() => new NotOperator();
     }
 }

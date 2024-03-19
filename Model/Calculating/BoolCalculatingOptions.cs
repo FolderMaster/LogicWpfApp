@@ -20,6 +20,11 @@ namespace Model.Calculating
             VariablesOptions = variablesOptions;
         }
 
+        private BoolCalculatingOptions(Dictionary<string, bool?> variablesOptions)
+        {
+            VariablesOptions = variablesOptions;
+        }
+
         public IEnumerable<IList<bool>> GenerateArgs()
         {
             _iterationsCount = (int)Math.Pow(2, VariablesOptions.Where((v) => v.Value == null).Count());
@@ -44,5 +49,7 @@ namespace Model.Calculating
                 yield return result;
             }
         }
+
+        public object Clone() => new BoolCalculatingOptions(new Dictionary<string, bool?>(VariablesOptions));
     }
 }

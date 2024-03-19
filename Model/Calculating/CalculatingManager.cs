@@ -3,9 +3,11 @@ using Model.Logic.Variables;
 
 namespace Model.Calculating
 {
-    public class CalculatingManager<T>
+    public class CalculatingManager<T>: ICalculatingManager<T>
     {
-        private static int _updateFrequency = 100000;
+        private static int _updateFrequency = 1;
+
+        private Action<string> _errorAction;
 
         private AutoResetEvent _pauseEvent = new(true);
 
@@ -36,6 +38,8 @@ namespace Model.Calculating
 
         public event EventHandler<CalculatingResultEventArgs<T>>? ResultCalculated;
 
+        public CalculatingManager(Action<string> errorAction) => _errorAction = errorAction;
+
         public void StartCalculate()
         {
             State = CalculatingState.Run;
@@ -50,35 +54,46 @@ namespace Model.Calculating
         {
             var result = new List<CalculatingResult<T>>();
             var count = 0;
-            Parallel.ForEach(Options.GenerateArgs(), (values, loopState) =>
+            try
             {
-                if (State == CalculatingState.None)
+                Parallel.ForEach(Options.GenerateArgs(), (values, loopState) =>
                 {
-                    loopState.Stop();
-                }
-                if (State == CalculatingState.Pause)
-                {
-                    _pauseEvent.WaitOne();
-                }
-                if (values.Count != Variables.Count)
-                {
-                    throw new ArgumentException();
-                }
-                var dictionary = new Dictionary<string, T>();
-                for (int n = 0; n < Variables.Count; ++n)
-                {
-                    dictionary.Add(Variables[n].Name, values[n]);
-                    Variables[n].SetValue(values[n]);
-                }
-                var value = Expression.GetValue();
-                result.Add(new CalculatingResult<T>(value, dictionary));
-                ++count;
-                if (count % _updateFrequency == 0 || count == Options.IterationsCount)
-                {
-                    ProgressUpdated?.Invoke(this, new CalculatingProgressEventArgs
-                        (count / (double)Options.IterationsCount));
-                }
-            });
+                    if (State == CalculatingState.None)
+                    {
+                        loopState.Stop();
+                    }
+                    if (State == CalculatingState.Pause)
+                    {
+                        _pauseEvent.WaitOne();
+                    }
+                    if (values.Count != Variables.Count)
+                    {
+                        throw new ArgumentException();
+                    }
+                    var dictionary = new Dictionary<string, T>();
+                    lock (this)
+                    {
+                        for (int n = 0; n < Variables.Count; ++n)
+                        {
+                            dictionary.Add(Variables[n].Name, values[n]);
+                            Variables[n].SetValue(values[n]);
+                        }
+                        var value = Expression.GetValue();
+                        result.Add(new CalculatingResult<T>(value, dictionary));
+                    }
+                    ++count;
+                    if (count % _updateFrequency == 0 || count == Options.IterationsCount)
+                    {
+                        ProgressUpdated?.Invoke(this, new CalculatingProgressEventArgs
+                            (count / (double)Options.IterationsCount));
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                State = CalculatingState.Error;
+                _errorAction.Invoke(ex.Message);
+            }
             ResultCalculated?.Invoke(this, new CalculatingResultEventArgs<T>(result));
             State = CalculatingState.None;
         }

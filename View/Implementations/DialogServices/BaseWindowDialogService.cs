@@ -8,7 +8,11 @@ namespace View.Implementations.DialogServices
     {
         private DialogWindow? _window;
 
+        private object? _resultValue;
+
         public bool IsShow => _window != null;
+
+        public object? ResultValue => _resultValue;
 
         public bool? ShowDialog(object? parameter = null)
         {
@@ -21,6 +25,7 @@ namespace View.Implementations.DialogServices
                 _window = CreateWindow(parameter);
                 _window.ShowDialog();
                 var dialogResult = _window.ExtendedDialogResult;
+                _resultValue = _window.ResultValue;
                 _window = null;
                 return dialogResult;
             }

@@ -8,5 +8,7 @@
 
         protected override bool CalculateValue() =>
             LeftOperand.GetValue() && RightOperand.GetValue();
+
+        public override object Clone() => new AndOperator();
     }
 }

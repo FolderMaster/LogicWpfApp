@@ -7,26 +7,28 @@
         xmlns:c="clr-namespace:View.Controls"
         xmlns:ds="clr-namespace:View.Implementations.DialogServices"
         mc:Ignorable="d"
+        x:Name="window"
         Icon="{DynamicResource MainIcon}" Title="Edit expression" Height="450" Width="800">
-    <DockPanel LastChildFill="True">
-        <TextBox DockPanel.Dock="Top" Text="{Binding ExpressionText}"/>
-        <WrapPanel DockPanel.Dock="Bottom" Orientation="Horizontal" FlowDirection="RightToLeft">
-            <Button ds:DialogWindow.DialogResultInstance="True" IsDefault="True" Content="{StaticResource OKHeader}"/>
-            <Button ds:DialogWindow.DialogResultInstance="False" Content="{StaticResource CancelHeader}"/>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TabControl>
+            <TabItem Header="Constructor">
+                <c:ConstructorControl
+                    Expression="{Binding ResultValue, ElementName=window, Mode=TwoWay}"/>
+            </TabItem>
+            <TabItem Header="Parser">
+                <c:ParserControl
+                    Expression="{Binding ResultValue, ElementName=window, Mode=TwoWay}"/>
+            </TabItem>
+        </TabControl>
+        <WrapPanel Grid.Row="1" Orientation="Horizontal" FlowDirection="RightToLeft">
+            <Button ds:DialogWindow.DialogResultInstance="True" IsDefault="True"
+                    Content="{StaticResource OKHeader}"/>
+            <Button ds:DialogWindow.DialogResultInstance="False"
+                    Content="{StaticResource CancelHeader}"/>
         </WrapPanel>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" MinWidth="60"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <GroupBox Header="Logic values">
-                <DataGrid ItemsSource="{Binding Variables}" ClipboardCopyMode="IncludeHeader" AllowDrop="True">
-                </DataGrid>
-            </GroupBox>
-            <GridSplitter Grid.Column="1" Width="10" ResizeDirection="Columns"
-              ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch"/>
-            <c:ExpressionControl Grid.Column="2" Expression="{Binding Expression, Mode=OneWay}"/>
-        </Grid>
-    </DockPanel>
+    </Grid>
 </ds:DialogWindow>

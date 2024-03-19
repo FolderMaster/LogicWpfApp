@@ -42,5 +42,7 @@
         }
 
         public override string ToString() => _lexemePattern;
+
+        public abstract object Clone();
     }
 }

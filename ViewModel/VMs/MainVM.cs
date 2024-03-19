@@ -1,8 +1,10 @@
 ﻿using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Model.Calculating;
 
+using Model.Calculating;
+using Model.Logic.Expressions;
+using Model.Logic.Variables;
 using ViewModel.Interfaces;
 
 namespace ViewModel.VMs
@@ -11,7 +13,7 @@ namespace ViewModel.VMs
     {
         private Stopwatch _stopwatch = new Stopwatch();
 
-        private CalculatingManager<bool> _calculatingManager = new();
+        private CalculatingManager<bool> _calculatingManager;
 
         [ObservableProperty]
         private Session session;
@@ -30,6 +32,9 @@ namespace ViewModel.VMs
 
         [ObservableProperty]
         private CalculatingState calculatingProgressState;
+
+        [ObservableProperty]
+        private IEnumerable<INamedVariable<bool>> variables;
 
         public string ExpressionText
         {
@@ -54,25 +59,34 @@ namespace ViewModel.VMs
             IBackgroundWorker backgroundWorker, Session session)
         {
             Session = session;
+            _backgroundWorker = backgroundWorker;
+            _informationDialog = informationDialog;
+            _calculatingManager = new((m) => _backgroundWorker.Run(() => errorDialog.ShowDialog(m)));
             _calculatingManager.ProgressUpdated += CalculatingManager_ProgressUpdated;
             _calculatingManager.StateChanged += CalculatingManager_StateChanged;
             _calculatingManager.ResultCalculated += CalculatingManager_ResultCalculated;
-            _backgroundWorker = backgroundWorker;
-            _informationDialog = informationDialog;
             _expressionText = Session.Expression.ToString();
             SettingsCommand = new RelayCommand(() =>
             {
-                var dialogResult = calculatingOptionDialog.ShowDialog();
+                if (calculatingOptionDialog.ShowDialog() == true)
+                {
+                    Session.CalculatingOptions = (ICalculatingOptions<bool>)calculatingOptionDialog.ResultValue;
+                }
             });
             EditExpressionCommand = new RelayCommand(() =>
             {
-                var dialogResult = editExpressionDialog.ShowDialog();
+                if (editExpressionDialog.ShowDialog() == true)
+                {
+                    Session.Expression = (IExpression<bool>)editExpressionDialog.ResultValue;
+                    Variables = Session.Expression.GetVariables();
+                    Session.CalculatingOptions = new BoolCalculatingOptions(Variables);
+                }
             });
             StartCommand = new RelayCommand(() =>
             {
                 _stopwatch.Start();
                 _calculatingManager.Expression = Session.Expression;
-                _calculatingManager.Variables = Session.Variables;
+                _calculatingManager.Variables = Session.Expression.GetVariables().ToList();
                 _calculatingManager.Options = Session.CalculatingOptions;
                 CalculatingResults = null;
                 _calculatingManager.StartCalculate();

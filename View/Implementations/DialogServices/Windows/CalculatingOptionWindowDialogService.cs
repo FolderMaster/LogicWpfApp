@@ -1,4 +1,5 @@
-﻿using View.Windows;
+﻿using Model.Calculating;
+using View.Windows;
 
 using ViewModel;
 
@@ -14,6 +15,7 @@ namespace View.Implementations.DialogServices.Windows
         }
 
         protected override DialogWindow CreateWindow(object? parameter) =>
-            new CalculatingOptionWindow(_session);
+            new CalculatingOptionWindow
+                ((ICalculatingOptions<bool>)_session.CalculatingOptions.Clone());
     }
 }

@@ -2,6 +2,8 @@
 
 using ViewModel;
 
+using Model.Logic.Expressions;
+
 namespace View.Implementations.DialogServices.Windows
 {
     public class EditExpressionWindowDialogService : BaseWindowDialogService
@@ -14,6 +16,6 @@ namespace View.Implementations.DialogServices.Windows
         }
 
         protected override DialogWindow CreateWindow(object? parameter) =>
-            new EditExpressionWindow(_session);
+            new EditExpressionWindow((IExpression<bool>)_session.Expression.Clone());
     }
 }

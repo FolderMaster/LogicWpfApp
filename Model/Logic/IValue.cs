@@ -1,6 +1,6 @@
 ﻿namespace Model
 {
-    public interface IValue<T>
+    public interface IValue<T> : ICloneable
     {
         public T GetValue();
     }

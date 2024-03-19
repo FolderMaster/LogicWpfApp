@@ -1,6 +1,6 @@
 ﻿namespace Model.Calculating
 {
-    public interface ICalculatingOptions<T>
+    public interface ICalculatingOptions<T>: ICloneable
     {
         public IEnumerable<IList<T>> GenerateArgs();
 

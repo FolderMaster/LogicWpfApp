@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using Model.Logic.Variables;
+using System.Collections;
+using System.Linq;
 
 namespace Model.Logic.Expressions
 {
@@ -134,6 +136,52 @@ namespace Model.Logic.Expressions
             foreach (var item in this)
             {
                 result += item.Value.ToString();
+            }
+            return result;
+        }
+
+        public IEnumerable<INamedVariable<T>> GetVariables()
+        {
+            var result = new List<INamedVariable<T>>();
+            foreach (var valueWrapper in this)
+            {
+                var value = valueWrapper.Value;
+                if (value is INamedVariable<T> variable)
+                {
+                    if(!result.Contains(variable))
+                    {
+                        result.Add(variable);
+                    }
+                }
+            }
+            return result;
+        }
+
+        public object Clone()
+        {
+            var result = new Expression<T>();
+            var variables = new List<INamedVariable<T>>();
+            foreach (var valueWrapper in this)
+            {
+                var value = valueWrapper.Value;
+                if (value is INamedVariable<T> variable)
+                {
+                    var selectedVariable = variables.Find((v) => v.Name == variable.Name);
+                    if (selectedVariable == null)
+                    {
+                        selectedVariable = (INamedVariable<T>)variable.Clone();
+                        variables.Add(selectedVariable);
+                        result.Add(selectedVariable);
+                    }
+                    else
+                    {
+                        result.Add(selectedVariable);
+                    } 
+                }
+                else
+                {
+                    result.Add((IValue<T>)value.Clone());
+                }
             }
             return result;
         }

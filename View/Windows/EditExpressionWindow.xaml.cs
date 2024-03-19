@@ -1,16 +1,16 @@
-﻿using View.Implementations.DialogServices;
-using ViewModel;
-using ViewModel.VMs;
+﻿using Model.Logic.Expressions;
+
+using View.Implementations.DialogServices;
 
 namespace View.Windows
 {
     public partial class EditExpressionWindow : DialogWindow
     {
-        public EditExpressionWindow(Session session)
+        public EditExpressionWindow(IExpression<bool> expression)
         {
             InitializeComponent();
 
-            DataContext = new EditExpressionVM(session);
+            ResultValue = expression;
         }
     }
 }

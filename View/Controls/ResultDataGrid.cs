@@ -3,6 +3,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Collections.Specialized;
+using System.Collections.Generic;
+using System.Linq;
+
 using Model.Logic.Variables;
 using Model.Calculating;
 
@@ -12,14 +15,14 @@ namespace View.Controls
     {
         private readonly int _defaultCount = 0;
 
-        public ObservableCollection<INamedVariable<bool>> Variables
+        public IEnumerable<INamedVariable<bool>> Variables
         {
-            get => (ObservableCollection<INamedVariable<bool>>)GetValue(VariablesProperty);
+            get => (IEnumerable<INamedVariable<bool>>)GetValue(VariablesProperty);
             set => SetValue(VariablesProperty, value);
         }
 
         public static DependencyProperty VariablesProperty = DependencyProperty.Register
-            (nameof(Variables), typeof(ObservableCollection<INamedVariable<bool>>),
+            (nameof(Variables), typeof(IEnumerable<INamedVariable<bool>>),
             typeof(ResultDataGrid), new PropertyMetadata(OnVariablesChanged));
 
         public ResultDataGrid() : base()
@@ -33,26 +36,22 @@ namespace View.Controls
         {
             var dataGrid = sender as ResultDataGrid;
             var oldVariables = e.OldValue as
-                ObservableCollection<INamedVariable<bool>>;
+                IEnumerable<INamedVariable<bool>>;
             if (oldVariables != null)
             {
-                for (var i = 0; i < oldVariables.Count; ++i)
+                for (var i = 0; i < oldVariables.Count(); ++i)
                 {
                     dataGrid.Columns.RemoveAt(i + dataGrid._defaultCount);
                 }
-                oldVariables.CollectionChanged -=
-                    dataGrid.Variables_CollectionChanged;
             }
             var newVariables = e.NewValue as
-                ObservableCollection<INamedVariable<bool>>;
+                IEnumerable<INamedVariable<bool>>;
             if (newVariables != null)
             {
                 foreach (var variable in newVariables)
                 {
                     dataGrid.CreateNewColumn(variable);
                 }
-                newVariables.CollectionChanged +=
-                    dataGrid.Variables_CollectionChanged;
             }
         }
 

@@ -49,7 +49,7 @@
                              ConverterParameter=!None}"/>
             </WrapPanel>
         </Grid>
-        <c:ResultDataGrid ItemsSource="{Binding CalculatingResults}" Variables="{Binding Session.Variables}"
+        <c:ResultDataGrid ItemsSource="{Binding CalculatingResults}" Variables="{Binding Variables}"
                           VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.CacheLength="1"
                           VirtualizingPanel.CacheLengthUnit="Page"/>
     </DockPanel>
