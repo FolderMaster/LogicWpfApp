@@ -8,21 +8,37 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBox Text="{Binding Input, UpdateSourceTrigger=PropertyChanged}"/>
-        <TextBlock Grid.Row="1" Text="Errors"/>
-        <ListView Grid.Row="2" ItemsSource="{Binding Errors}">
-            <ListView.View>
-                <GridView AllowsColumnReorder="True">
-                    <GridViewColumn DisplayMemberBinding="{Binding Type}" Header="Type"/>
-                    <GridViewColumn DisplayMemberBinding="{Binding Index}" Header="Index"/>
-                    <GridViewColumn DisplayMemberBinding="{Binding Length}" Header="Length"/>
-                    <GridViewColumn DisplayMemberBinding="{Binding Message}" Header="Message"/>
-                </GridView>
-            </ListView.View>
-        </ListView>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0" Content="Text"/>
+            <TextBox Text="{Binding Input, UpdateSourceTrigger=PropertyChanged}"
+                     Grid.Row="1" AcceptsReturn="True" AcceptsTab="True"
+                     TextWrapping="WrapWithOverflow"/>
+        </Grid>
+        <GridSplitter Grid.Row="1" />
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Text="Errors"/>
+            <ListView Grid.Row="1" ItemsSource="{Binding Errors}">
+                <ListView.View>
+                    <GridView AllowsColumnReorder="True">
+                        <GridViewColumn DisplayMemberBinding="{Binding Type}" Header="Type"/>
+                        <GridViewColumn DisplayMemberBinding="{Binding Index}" Header="Index"/>
+                        <GridViewColumn DisplayMemberBinding="{Binding Length}" Header="Length"/>
+                        <GridViewColumn DisplayMemberBinding="{Binding Message}" Header="Message"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
     </Grid>
 </UserControl>

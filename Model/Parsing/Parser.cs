@@ -1,4 +1,5 @@
-﻿using Model.Logic.Expressions;
+﻿using Model.Logic;
+using Model.Logic.Expressions;
 
 namespace Model.Parsing
 {

@@ -16,7 +16,7 @@ namespace View.Implementations.DialogServices
 
         public static readonly DependencyProperty ResultValueProperty =
             DependencyProperty.Register(nameof(ResultValue), typeof(object), typeof(DialogWindow),
-                new PropertyMetadata(null));
+                new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         public static readonly DependencyProperty DialogResultInstance = 
             DependencyProperty.RegisterAttached(nameof(DialogResultInstance), typeof(bool?),

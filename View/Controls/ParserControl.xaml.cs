@@ -1,6 +1,6 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 
 using Model.Logic.Expressions;
 
@@ -18,20 +18,31 @@ namespace View.Controls
 
         private static DependencyProperty ExpressionProperty =
             DependencyProperty.Register(nameof(Expression), typeof(IExpression<bool>),
-                typeof(ParserControl), new FrameworkPropertyMetadata(null));
+                typeof(ParserControl), new FrameworkPropertyMetadata(null,
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnExpressionChanged));
 
         public ParserControl()
         {
             InitializeComponent();
 
-            DataContext = new ParserVM();
-            var binding = new Binding(nameof(ParserVM.Expression))
-            {
-                Mode = BindingMode.TwoWay
-            };
-            SetBinding(ExpressionProperty, binding);
+            var vm = new ParserVM();
+            vm.PropertyChanged += Vm_PropertyChanged;
+            DataContext = vm;
+        }
 
-            BindingOperations.SetBinding(this, ExpressionProperty, new Binding());
+        private void Vm_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName == nameof(ParserVM.Expression))
+            {
+                Expression = (sender as ParserVM).Expression;
+            }
+        }
+
+        private static void OnExpressionChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            var control = (ParserControl)sender;
+            var vm = (ParserVM)control.DataContext;
+            vm.Expression = (IExpression<bool>)e.NewValue;
         }
     }
 }

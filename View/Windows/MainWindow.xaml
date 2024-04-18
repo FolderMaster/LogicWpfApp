@@ -26,7 +26,7 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <Label Content="LogicExpression:" Grid.Column="0" VerticalAlignment="Center"/>
-                <TextBox Grid.Column="1" VerticalAlignment="Center" Text="{Binding ExpressionText}"/>
+                <TextBox Grid.Column="1" VerticalAlignment="Center" Text="{Binding ExpressionText}" IsReadOnly="True"/>
                 <Button Grid.Column="2" Content="Edit" Command="{Binding EditExpressionCommand}"/>
             </Grid>
             <WrapPanel Grid.Row="1" FlowDirection="RightToLeft">
@@ -34,7 +34,6 @@
                     Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=None}"/>
                 <Button Content="Settings" Command="{Binding SettingsCommand}" Visibility="{Binding CalculatingProgressState,
                     Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=None}"/>
-                
                 <Button Content="Pause" Command="{Binding PauseCommand}" Visibility="{Binding CalculatingProgressState,
                     Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=!None}"/>
                 <Button Content="Resume" Command="{Binding ResumeCommand}" Visibility="{Binding CalculatingProgressState,

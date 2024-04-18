@@ -15,13 +15,13 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <TabControl>
+            <TabItem Header="Parser">
+                <c:ParserControl x:Name="parserControl"
+                    Expression="{Binding ResultValue, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type ds:DialogWindow}}}"/>
+            </TabItem>
             <TabItem Header="Constructor">
                 <c:ConstructorControl
-                    Expression="{Binding ResultValue, ElementName=window, Mode=TwoWay}"/>
-            </TabItem>
-            <TabItem Header="Parser">
-                <c:ParserControl
-                    Expression="{Binding ResultValue, ElementName=window, Mode=TwoWay}"/>
+                    Expression="{Binding ResultValue, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type ds:DialogWindow}}}"/>
             </TabItem>
         </TabControl>
         <WrapPanel Grid.Row="1" Orientation="Horizontal" FlowDirection="RightToLeft">

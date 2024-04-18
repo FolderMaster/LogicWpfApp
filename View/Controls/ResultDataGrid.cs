@@ -41,7 +41,7 @@ namespace View.Controls
             {
                 for (var i = 0; i < oldVariables.Count(); ++i)
                 {
-                    dataGrid.Columns.RemoveAt(i + dataGrid._defaultCount);
+                    dataGrid.Columns.RemoveAt(dataGrid._defaultCount);
                 }
             }
             var newVariables = e.NewValue as

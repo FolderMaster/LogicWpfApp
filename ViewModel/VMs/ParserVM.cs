@@ -5,7 +5,7 @@ using Model.Parsing;
 using Model.Logic.Operators.PairOperators;
 using Model.Logic.Operators.SingleOperators;
 using Model.Logic.Variables;
-using Model;
+using Model.Logic;
 
 namespace ViewModel.VMs
 {

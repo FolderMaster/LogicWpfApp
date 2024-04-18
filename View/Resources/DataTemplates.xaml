@@ -1,11 +1,24 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <DataGridTextColumn x:Key="VariableTypeColumn" Header="Type" Binding="{Binding Type}"/>
-    <ObjectDataProvider x:Key="VariableColumns" MethodName="Add">
-        <ObjectDataProvider.MethodParameters>
-            <x:Array Type="{x:Type DataGridColumn}">
-                <StaticResource ResourceKey="VariableTypeColumn" />
-            </x:Array>
-        </ObjectDataProvider.MethodParameters>
-    </ObjectDataProvider>
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:v="clr-namespace:Model.Logic.Variables;assembly=Model"
+                    xmlns:po="clr-namespace:Model.Logic.Operators.PairOperators;assembly=Model"
+                    xmlns:so="clr-namespace:Model.Logic.Operators.SingleOperators;assembly=Model">
+    <DataTemplate x:Name="LiteralTemplate" DataType="{x:Type v:BoolLiteral}">
+        <TextBlock Margin="5">Literal</TextBlock>
+    </DataTemplate>
+    <DataTemplate x:Name="VariableTemplate" DataType="{x:Type v:NamedBoolVariable}">
+        <TextBlock Margin="5">Variable</TextBlock>
+    </DataTemplate>
+    <DataTemplate x:Name="PairOperatorTemplate" DataType="{x:Type po:BasePairOperator`1}">
+        <StackPanel Margin="5">
+            <TextBlock>Pair operator</TextBlock>
+            <TextBlock Text="{Binding (po:BasePairOperator`1)}"/>
+        </StackPanel>
+    </DataTemplate>
+    <DataTemplate x:Name="SingleOperatorTemplate" DataType="{x:Type so:BaseSingleOperator`1}">
+        <StackPanel Margin="5">
+            <TextBlock>Single operator</TextBlock>
+            <TextBlock Text="{Binding DataContext}"/>
+        </StackPanel>
+    </DataTemplate>
 </ResourceDictionary>

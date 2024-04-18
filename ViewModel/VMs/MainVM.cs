@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using Model.Calculating;
 using Model.Logic.Expressions;
 using Model.Logic.Variables;
+
 using ViewModel.Interfaces;
 
 namespace ViewModel.VMs
@@ -22,7 +23,8 @@ namespace ViewModel.VMs
 
         private IDialogService _informationDialog;
 
-        private string _expressionText;
+        [ObservableProperty]
+        private string expressionText;
 
         [ObservableProperty]
         private IEnumerable<CalculatingResult<bool>>? calculatingResults = null;
@@ -35,12 +37,6 @@ namespace ViewModel.VMs
 
         [ObservableProperty]
         private IEnumerable<INamedVariable<bool>> variables;
-
-        public string ExpressionText
-        {
-            get => _expressionText;
-            set => SetProperty(ref _expressionText, value);
-        }
 
         public RelayCommand EditExpressionCommand { get; private set; }
 
@@ -65,7 +61,7 @@ namespace ViewModel.VMs
             _calculatingManager.ProgressUpdated += CalculatingManager_ProgressUpdated;
             _calculatingManager.StateChanged += CalculatingManager_StateChanged;
             _calculatingManager.ResultCalculated += CalculatingManager_ResultCalculated;
-            _expressionText = Session.Expression.ToString();
+            UpdateExpressionValues();
             SettingsCommand = new RelayCommand(() =>
             {
                 if (calculatingOptionDialog.ShowDialog() == true)
@@ -78,8 +74,7 @@ namespace ViewModel.VMs
                 if (editExpressionDialog.ShowDialog() == true)
                 {
                     Session.Expression = (IExpression<bool>)editExpressionDialog.ResultValue;
-                    Variables = Session.Expression.GetVariables();
-                    Session.CalculatingOptions = new BoolCalculatingOptions(Variables);
+                    UpdateExpressionValues();
                 }
             });
             StartCommand = new RelayCommand(() =>
@@ -97,6 +92,20 @@ namespace ViewModel.VMs
                 () => CalculatingProgressState == CalculatingState.Run);
             ResumeCommand = new RelayCommand(_calculatingManager.ResumeCalculate,
                 () => CalculatingProgressState == CalculatingState.Pause);
+        }
+
+        private void UpdateExpressionValues()
+        {
+            if (Session.Expression != null)
+            {
+                Variables = Session.Expression.GetVariables();
+                Session.CalculatingOptions = new BoolCalculatingOptions(Variables);
+                ExpressionText = Session.Expression.ToString();
+            }
+            else
+            {
+
+            }
         }
 
         private void CalculatingManager_ResultCalculated(object? sender,

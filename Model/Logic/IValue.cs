@@ -1,4 +1,4 @@
-﻿namespace Model
+﻿namespace Model.Logic
 {
     public interface IValue<T> : ICloneable
     {
